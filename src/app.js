@@ -11,26 +11,23 @@ app.use(express.json())
 
 var tweets = [
 ]
-var userData 
+var userData = {}
 
 
 app.post("/sign-up", (req, res) => {
-     if (!req.body.username || !req.body.avatar) {
-          res.status(400).send("preencha todos os campos!!")
-     }
+   
      userData = req.body
      console.log("userdata:", userData)
      res.status(200).send("OK")
   
 })
 app.post("/tweets", (req, res) => {
-     if(userData === undefined){
-          res.status(403).send("UNAUTHORIZED")
-          return
-     }
      if (!req.body.username || !req.body.tweet) {
           res.status(400).send("preencha todos os campos!!")
           return
+     }
+     if(req.body.username !== userData.username){
+          res.status(403).send("UNAUTHORIZED")
      }
      let tweet = {
           username: req.body.username,
@@ -42,10 +39,6 @@ app.post("/tweets", (req, res) => {
 })
 
 app.get("/tweets", (req, res) => {
-     if(userData === undefined){
-          res.status(403).send("UNAUTHORIZED")
-          return
-     }
      if (tweets.length <= 10) {
           res.status(200).send(tweets)
           console.log("tweets", tweets)
